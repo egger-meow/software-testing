@@ -1,0 +1,13 @@
+{
+  "name": "hw3-bounded-queue-testing",
+  "version": "1.0.0",
+  "description": "Input Space Partitioning analysis and BCC test suite for BoundedQueue",
+  "main": "BoundedQueue.js",
+  "scripts": {
+    "test": "node BoundedQueue.test.js",
+    "demo": "node BoundedQueue.js"
+  },
+  "keywords": ["testing", "ISP", "BCC", "queue"],
+  "author": "<student ID>",
+  "license": "MIT"
+}
