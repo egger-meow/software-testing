@@ -1,0 +1,21 @@
+1. Please submit a Study report on tools and papers related to software testing, including but not limited to papers, tools, software, and frameworks. Please find the reference papers and tools here "https://docs.google.com/document/d/1KihRzCNcp5qJNkbtVQXPm2iFkxMs0wXOe7KPsxaOdB0/edit?tab=t.0". If you have any questions about your chosen topic, you may ask on the E3 forum.
+
+2. The report must be submitted in PDF format, with the filename {studentID}_tool_study.pdf. 
+
+3. If you wish to submit code, you may only include key code snippets or screenshots in the report. If the image is too large, highlight the key areas clearly.
+
+4. The report must include at least the following sections. If you are unsure what to write in a section, you may refer to the suggested details (suggestions are optional, but the major sections are mandatory):
+
+4.1 Introduction: Introduce the tool or papers and its basic information
+4.1.1 Introduction, design motivation, background knowledge, design, or architecture
+4.1.2 Challenges encountered during development, solutions, and any trade-offs made
+4.2 Implementation: Hands-on usage and in-depth understanding of the tool
+4.2.1 Use the tool in practice and provide examples (write your own examples, do not copy directly from documentation) or integrate the tool into your development process or Final Project
+4.2.2 Analyze the tool’s performance, design, architecture, etc.
+4.3 Reflections: Personal thoughts after using the tool
+4.3.1 Strengths and weaknesses of the paper or tool
+4.3.2 Suggestions for improvement, such as additional features or areas for enhancement
+4.3.3 Comparison with other tools—do you prefer this tool? Why or why not?
+4.3.4 Will you adopt this tool in the future? Why or why not?
+
+5. If you are interested in earning bonus points and are willing to present your findings, please indicate your willingness when submitting the report. The TA will contact you privately for further arrangements.
