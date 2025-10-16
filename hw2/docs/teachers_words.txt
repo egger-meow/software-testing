@@ -1,0 +1,32 @@
+
+ 所有後續報告須附上 AI 互動與團隊協作紀錄
+
+All reports and project submissions (including homework, lab, mid-term report,  project proposal, and final project report) must include an appendix documenting your interactions with AI tools (e.g., ChatGPT, Copilot, Claude, Gemini, etc.) and team collaboration records (such as E3, GitHub, or chat discussions).
+
+所有課程報告與專案繳交文件（包含作業、期中報告、專題計劃書、期末專題等）皆需附上 AI 工具互動紀錄與團隊協作紀錄。
+
+Purpose / 目的說明
+
+This policy aims to enhance transparency, collaboration awareness, and responsible AI usage in thecourse. The appendix helps instructors understand how teams utilize AI tools, collaborate, and document progress. It will not directly affect your score, but may be referenced for innovation and engagement evaluation.
+
+此政策旨在強化學生的 AI使用透明度、協作意識與專案管理能力。附錄將協助老師了解各組如何運用AI、分工合作與追蹤進度，該附錄不直接列入評分，但會作為創新與參與度的參考。
+
+Suggested Format / 建議格式
+
+1. **AI Interaction Records / AI 互動紀錄** - Include representative excerpts, not full transcripts.
+
+- Note tool name, date, and purpose (e.g., test generation, debugging, report drafting).
+
+2. **Team Communication Summary / 團隊溝通摘要** - Summarize weekly meetings, task
+
+division, and decision process. - 可簡述每週進度、任務分工、回饋與決策過程。
+
+3. **Submission Format / 呈現方式** - Place as the final appendix (*Appendix: AI & Team
+
+Collaboration Log*) or as a separate PDF. - 建議放於報告最後或另附 PDF 上傳。
+
+Instructor’s Note:
+
+The goal is to promote reflective and responsible use of AI tools. Transparency in teamwork and
+
+AI-assisted processes reflects professionalism and research integrity.
