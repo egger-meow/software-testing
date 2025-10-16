@@ -1,158 +1,190 @@
-# Calculator TDD Homework
+# Calculator TDD - Homework 3
 
-## Overview
-This repository contains a Test-Driven Development implementation of a Calculator class with four basic arithmetic operations:
-- Addition
-- Subtraction
-- Multiplication
-- Division
+> **Test-Driven Development Implementation**  
+> Software Testing Course | October 16, 2025
 
-## Files Structure
+## 📋 Overview
+
+A Calculator class enhanced using Test-Driven Development methodology. Starting with basic addition, I added subtract, multiply, and divide operations following strict Red-Green-Refactor cycles.
+
+**Language:** Python  
+**Test Framework:** unittest  
+**Total Tests:** 6 (all passing ✅)
+
+---
+
+## 📁 Project Structure
 
 ```
 hw2/
-├── README.md                           # This file
-├── src/                                # Source code
-│   ├── python/
-│   │   └── Calc.py                     # Python implementation
-│   ├── javascript/
-│   │   └── Calc.js                     # JavaScript implementation
-│   └── java/
-│       └── Calc.java                   # Java implementation
-├── tests/                              # Test files
-│   ├── python/
-│   │   └── CalcTest.py                 # Python unit tests
-│   ├── javascript/
-│   │   └── CalcTest.js                 # JavaScript tests
-│   └── java/
-│       └── CalcTest.java               # Java JUnit tests
-├── docs/                               # Documentation
-│   ├── TDD_NARRATIVE.md                # Detailed TDD narrative
-│   ├── CalcTDD.pdf                     # Assignment specification
-│   ├── CODE_PRINTOUT.md                # Code printout
-│   ├── SUBMISSION_SUMMARY.md           # Submission summary
-│   ├── HOW_TO_SUBMIT.md                # Submission guide
-│   └── image.png                       # Screenshot
-└── scripts/                            # Utility scripts
-    └── run_all_tests.ps1               # PowerShell script to run all tests
+├── Calc.py                 # Calculator implementation
+├── CalcTest.py             # Test suite (6 tests)
+├── Calc.java               # Java version (reference)
+├── Calc.js                 # JavaScript version (reference)
+├── CalcTest.java           # Java tests (reference)
+├── CalcTest.js             # JavaScript tests (reference)
+├── docs/
+│   ├── TDD_HOMEWORK_NARRATIVE.md    # Complete TDD process narrative
+│   ├── CODE_SUBMISSION.md           # Code printouts & test results
+│   ├── HOMEWORK_SUMMARY.md          # Quick overview
+│   ├── hw3.md                       # Assignment instructions
+│   ├── teachers_words.txt           # AI interaction requirements
+│   └── image.png                    # Assignment screenshot
+└── README.md               # This file
 ```
 
-## Running Tests
+---
 
-### Run All Tests (Recommended)
-```bash
-# Using PowerShell script (from project root)
-.\scripts\run_all_tests.ps1
-```
+## 🚀 Quick Start
 
-### Python Tests
+### Run Tests
+
 ```bash
-# From project root
-cd tests/python
+# Using unittest (recommended)
 python -m unittest CalcTest.py -v
-cd ../..
 
-# Or run directly
-python tests/python/CalcTest.py
+# Using pytest
+python -m pytest CalcTest.py -v
+
+# Direct execution
+python CalcTest.py
 ```
 
-### Java Tests
-```bash
-# Compile (requires JUnit 4 in classpath) - from project root
-javac -cp .;junit-4.13.2.jar src/java/Calc.java tests/java/CalcTest.java
+### Expected Output
 
-# Run tests
-java -cp .;junit-4.13.2.jar;hamcrest-core-1.3.jar org.junit.runner.JUnitCore tests.java.CalcTest
 ```
-
-### JavaScript Tests
-```bash
-# From project root
-cd tests/javascript
-node CalcTest.js
-cd ../..
-
-# Or run directly
-node tests/javascript/CalcTest.js
-```
-
-## Expected Test Output
-
-### Python
-```
-test_add (__main__.TestCalculator) ... ok
-test_divide (__main__.TestCalculator) ... ok
-test_divide_by_zero (__main__.TestCalculator) ... ok
-test_multiply (__main__.TestCalculator) ... ok
-test_subtract (__main__.TestCalculator) ... ok
+test_add (CalcTest.TestCalculator) ... ok
+test_divide (CalcTest.TestCalculator) ... ok
+test_divide_by_zero (CalcTest.TestCalculator) ... ok
+test_divide_non_exact (CalcTest.TestCalculator) ... ok
+test_multiply (CalcTest.TestCalculator) ... ok
+test_subtract (CalcTest.TestCalculator) ... ok
 
 ----------------------------------------------------------------------
-Ran 5 tests in 0.001s
+Ran 6 tests in 0.001s
 
 OK
 ```
 
-### JavaScript
-```
-Running Calc tests...
+---
 
-✓ test_add
-✓ test_subtract
-✓ test_multiply
-✓ test_divide
-✓ test_divide_by_zero
+## 🔧 Operations Implemented
 
-All tests completed!
-```
-
-## Implementation Details
-
-### Operations Implemented
-
-1. **add(a, b)** - Returns the sum of two numbers
-2. **subtract(a, b)** - Returns the difference (a - b)
-3. **multiply(a, b)** - Returns the product of two numbers
-4. **divide(a, b)** - Returns the quotient (a / b) as a floating-point number
-   - Throws exception if b is zero
+| Operation | Signature | Returns | Notes |
+|-----------|-----------|---------|-------|
+| **Add** | `add(a, b)` | Number | Sum of a and b |
+| **Subtract** | `subtract(a, b)` | Number | Difference (a - b) |
+| **Multiply** | `multiply(a, b)` | Number | Product of a and b |
+| **Divide** | `divide(a, b)` | Float | Quotient (a / b) |
 
 ### Design Decisions
 
-1. **Division returns floating-point** - To preserve precision (e.g., 7 ÷ 2 = 3.5)
-2. **Division by zero throws exception** - Prevents undefined behavior
-3. **Static methods** (Java/JavaScript) - Calculator operations are stateless
+1. **Float Division** - Returns float for precision (7 ÷ 2 = 3.5, not 3)
+2. **Error Handling** - Raises `ValueError` on division by zero
+3. **Test-First** - All design decisions encoded in tests before implementation
 
-## TDD Process
+---
 
-Each feature was developed following the Red-Green-Refactor cycle:
+## 📝 TDD Process Summary
 
-1. **RED** - Write a failing test
-2. **GREEN** - Write minimal code to pass
-3. **REFACTOR** - Improve code quality
+### Cycle 1: Subtract
+```
+❌ RED → Write test_subtract() → Expected failure
+✅ GREEN → Implement subtract() → Test passes
+♻️ REFACTOR → Code clean, no changes needed
+```
 
-See `TDD_NARRATIVE.md` for detailed descriptions of each TDD cycle.
+### Cycle 2: Multiply
+```
+❌ RED → Write test_multiply() → Expected failure
+✅ GREEN → Implement multiply() → Test passes
+♻️ REFACTOR → Code clean, no changes needed
+```
 
-## Test Coverage
+### Cycle 3: Divide
+```
+❌ RED → Write 3 divide tests → All fail
+✅ GREEN → Implement divide() with error handling → All pass
+♻️ REFACTOR → Add setUp() method → Tests still pass
+```
 
-All implementations include tests for:
-- ✅ Basic addition
-- ✅ Basic subtraction
-- ✅ Basic multiplication
-- ✅ Basic division with floating-point result
-- ✅ Division by zero error handling
+**Full narrative:** See [`docs/TDD_HOMEWORK_NARRATIVE.md`](docs/TDD_HOMEWORK_NARRATIVE.md)
 
-## Submission Contents
+---
 
-1. Source code in `src/` directory (organized by language)
-2. Test code in `tests/` directory (organized by language)
-3. Documentation in `docs/` directory
-4. Utility scripts in `scripts/` directory
-5. This README at project root
+## ✅ Test Coverage
 
-## Author
-[Your Name]
+| Test | Purpose | Status |
+|------|---------|--------|
+| `test_add` | Basic addition (2 + 3 = 5) | ✅ PASS |
+| `test_subtract` | Basic subtraction (5 - 3 = 2) | ✅ PASS |
+| `test_multiply` | Basic multiplication (4 × 3 = 12) | ✅ PASS |
+| `test_divide` | Exact division (10 ÷ 2 = 5.0) | ✅ PASS |
+| `test_divide_non_exact` | Non-exact division (7 ÷ 2 = 3.5) | ✅ PASS |
+| `test_divide_by_zero` | Error handling (raises ValueError) | ✅ PASS |
 
-## Date
-October 10, 2025
+**Coverage:** 100% of Calculator methods tested
 
-## Assignment
-Software Testing - Homework 2: Test-Driven Development
+---
+
+## 📚 Documentation
+
+- **[TDD_HOMEWORK_NARRATIVE.md](docs/TDD_HOMEWORK_NARRATIVE.md)** - First-person narrative documenting entire TDD process with Red-Green-Refactor cycles
+- **[CODE_SUBMISSION.md](docs/CODE_SUBMISSION.md)** - Complete code printouts and test execution results
+- **[HOMEWORK_SUMMARY.md](docs/HOMEWORK_SUMMARY.md)** - Quick overview and success metrics
+- **AI Interaction Log** - Included in narrative appendix per course requirements
+
+---
+
+## 🎯 Key Learnings
+
+1. **Tests Drive Design** - Writing tests first forces thoughtful API design
+2. **Refactoring Confidence** - Comprehensive tests enable safe refactoring
+3. **Small Steps Win** - Incremental development prevents complex debugging
+4. **Tests as Documentation** - Test code serves as executable specification
+
+---
+
+## 🛠️ Technologies
+
+- **Language:** Python 3.10+
+- **Testing:** unittest (built-in)
+- **Alternative:** pytest (optional)
+- **TDD Methodology:** Red-Green-Refactor
+
+---
+
+## 📦 Submission Includes
+
+- ✅ Final Calculator implementation (`Calc.py`)
+- ✅ Complete test suite (`CalcTest.py`)
+- ✅ TDD process narrative (first-person, student perspective)
+- ✅ Code printouts with test results
+- ✅ Design decision documentation
+- ✅ AI interaction log (transparency per course policy)
+- ✅ All tests passing screenshot evidence
+
+---
+
+## 👤 Author
+
+**Student:** [Your Name]  
+**Course:** Software Testing  
+**Assignment:** Homework 3 - Test-Driven Development  
+**Date:** October 16, 2025
+
+---
+
+## 📖 Assignment Requirements Met
+
+- ✅ Add subtract, multiply, divide operations using TDD
+- ✅ Follow Red-Green-Refactor cycle strictly
+- ✅ Encode design decisions in tests (float division)
+- ✅ Include comprehensive narrative of TDD process
+- ✅ Document changes needed to pass each test
+- ✅ Document refactoring decisions
+- ✅ Submit code printouts
+- ✅ Submit screenshot of all tests passing
+- ✅ Include AI interaction log
+
+**Status:** Complete and ready for submission 🎓
