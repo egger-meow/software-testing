@@ -1,4 +1,4 @@
-const Calc = require('./Calc');
+const Calc = require('../../src/javascript/Calc');
 
 // Simple test framework
 function test(name, fn) {

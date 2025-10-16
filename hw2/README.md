@@ -11,44 +11,69 @@ This repository contains a Test-Driven Development implementation of a Calculato
 
 ```
 hw2/
-├── Calc.py              # Python implementation
-├── CalcTest.py          # Python unit tests
-├── Calc.java            # Java implementation
-├── CalcTest.java        # Java JUnit tests
-├── Calc.js              # JavaScript implementation
-├── CalcTest.js          # JavaScript tests
-├── TDD_NARRATIVE.md     # Detailed TDD narrative
-├── README.md            # This file
-└── CalcTDD.pdf          # Assignment specification
+├── README.md                           # This file
+├── src/                                # Source code
+│   ├── python/
+│   │   └── Calc.py                     # Python implementation
+│   ├── javascript/
+│   │   └── Calc.js                     # JavaScript implementation
+│   └── java/
+│       └── Calc.java                   # Java implementation
+├── tests/                              # Test files
+│   ├── python/
+│   │   └── CalcTest.py                 # Python unit tests
+│   ├── javascript/
+│   │   └── CalcTest.js                 # JavaScript tests
+│   └── java/
+│       └── CalcTest.java               # Java JUnit tests
+├── docs/                               # Documentation
+│   ├── TDD_NARRATIVE.md                # Detailed TDD narrative
+│   ├── CalcTDD.pdf                     # Assignment specification
+│   ├── CODE_PRINTOUT.md                # Code printout
+│   ├── SUBMISSION_SUMMARY.md           # Submission summary
+│   ├── HOW_TO_SUBMIT.md                # Submission guide
+│   └── image.png                       # Screenshot
+└── scripts/                            # Utility scripts
+    └── run_all_tests.ps1               # PowerShell script to run all tests
 ```
 
 ## Running Tests
 
+### Run All Tests (Recommended)
+```bash
+# Using PowerShell script (from project root)
+.\scripts\run_all_tests.ps1
+```
+
 ### Python Tests
 ```bash
-# Run with unittest
-python -m unittest CalcTest.py
+# From project root
+cd tests/python
+python -m unittest CalcTest.py -v
+cd ../..
 
 # Or run directly
-python CalcTest.py
-
-# Verbose output
-python CalcTest.py -v
+python tests/python/CalcTest.py
 ```
 
 ### Java Tests
 ```bash
-# Compile (requires JUnit 4 in classpath)
-javac -cp .;junit-4.13.2.jar;hamcrest-core-1.3.jar Calc.java CalcTest.java
+# Compile (requires JUnit 4 in classpath) - from project root
+javac -cp .;junit-4.13.2.jar src/java/Calc.java tests/java/CalcTest.java
 
 # Run tests
-java -cp .;junit-4.13.2.jar;hamcrest-core-1.3.jar org.junit.runner.JUnitCore CalcTest
+java -cp .;junit-4.13.2.jar;hamcrest-core-1.3.jar org.junit.runner.JUnitCore tests.java.CalcTest
 ```
 
 ### JavaScript Tests
 ```bash
-# Run with Node.js
+# From project root
+cd tests/javascript
 node CalcTest.js
+cd ../..
+
+# Or run directly
+node tests/javascript/CalcTest.js
 ```
 
 ## Expected Test Output
@@ -117,11 +142,11 @@ All implementations include tests for:
 
 ## Submission Contents
 
-1. Source code (Calc.py, Calc.java, Calc.js)
-2. Test code (CalcTest.py, CalcTest.java, CalcTest.js)
-3. TDD narrative document (TDD_NARRATIVE.md)
-4. This README
-5. Screenshot showing all tests pass
+1. Source code in `src/` directory (organized by language)
+2. Test code in `tests/` directory (organized by language)
+3. Documentation in `docs/` directory
+4. Utility scripts in `scripts/` directory
+5. This README at project root
 
 ## Author
 [Your Name]
