@@ -5,6 +5,8 @@
   "main": "BoundedQueue.js",
   "scripts": {
     "test": "node BoundedQueue.test.js",
+    "test:bonus": "node Bonus_Tests.js",
+    "test:all": "npm test && npm run test:bonus",
     "demo": "node BoundedQueue.js"
   },
   "keywords": ["testing", "ISP", "BCC", "queue"],

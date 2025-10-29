@@ -208,9 +208,81 @@ try {
 }
 
 // ============================================================
+// OBSERVER METHOD TESTS (Bonus)
+// ============================================================
+
+console.log("\n=== OBSERVER METHOD TESTS ===");
+
+// OBS-1: is_empty() on new queue
+try {
+    const bq = new BoundedQueue(5);
+    console.assert(bq.is_empty() === true, "OBS-1 FAILED: new queue should be empty");
+    console.log("✓ OBS-1 PASSED: is_empty() returns true for new queue");
+} catch (e) {
+    console.log("✗ OBS-1 FAILED:", e.message);
+}
+
+// OBS-2: is_empty() after operations (mutator/observer pair)
+try {
+    const bq = new BoundedQueue(3);
+    bq.enqueue(10);
+    console.assert(bq.is_empty() === false, "OBS-2 FAILED: should not be empty after enqueue");
+    bq.dequeue();
+    console.assert(bq.is_empty() === true, "OBS-2 FAILED: should be empty after dequeue");
+    console.log("✓ OBS-2 PASSED: is_empty() tracks state correctly");
+} catch (e) {
+    console.log("✗ OBS-2 FAILED:", e.message);
+}
+
+// OBS-3: is_full() on new queue
+try {
+    const bq = new BoundedQueue(3);
+    console.assert(bq.is_full() === false, "OBS-3 FAILED: new queue should not be full");
+    console.log("✓ OBS-3 PASSED: is_full() returns false for new queue");
+} catch (e) {
+    console.log("✗ OBS-3 FAILED:", e.message);
+}
+
+// OBS-4: is_full() after filling (mutator/observer pair)
+try {
+    const bq = new BoundedQueue(2);
+    bq.enqueue(1);
+    console.assert(bq.is_full() === false, "OBS-4 FAILED: should not be full yet");
+    bq.enqueue(2);
+    console.assert(bq.is_full() === true, "OBS-4 FAILED: should be full");
+    bq.dequeue();
+    console.assert(bq.is_full() === false, "OBS-4 FAILED: should not be full after dequeue");
+    console.log("✓ OBS-4 PASSED: is_full() tracks capacity correctly");
+} catch (e) {
+    console.log("✗ OBS-4 FAILED:", e.message);
+}
+
+// OBS-5: toString() with various states
+try {
+    const bq = new BoundedQueue(3);
+    let str = bq.toString();
+    console.assert(str.includes("[]"), "OBS-5 FAILED: empty queue should show []");
+    console.assert(str.includes("is_empty(): true"), "OBS-5 FAILED: should indicate empty");
+    
+    bq.enqueue(10);
+    bq.enqueue(20);
+    str = bq.toString();
+    console.assert(str.includes("10"), "OBS-5 FAILED: should show first element");
+    console.assert(str.includes("20"), "OBS-5 FAILED: should show second element");
+    console.assert(str.includes("is_empty(): false"), "OBS-5 FAILED: should not be empty");
+    console.log("✓ OBS-5 PASSED: toString() displays state correctly");
+} catch (e) {
+    console.log("✗ OBS-5 FAILED:", e.message);
+}
+
+// ============================================================
 // SUMMARY
 // ============================================================
 
 console.log("\n=== TEST SUMMARY ===");
-console.log("Total BCC Tests: 11 (3 Constructor + 5 Enqueue + 3 Dequeue)");
-console.log("All tests validate Base Choice Coverage requirements");
+console.log("Total Tests: 16 (11 BCC + 5 Observer)");
+console.log("  - Constructor: 3 tests");
+console.log("  - Enqueue: 5 tests");
+console.log("  - Dequeue: 3 tests");
+console.log("  - Observers: 5 tests (is_empty, is_full, toString)");
+console.log("All tests validate Base Choice Coverage + Observer methods");
