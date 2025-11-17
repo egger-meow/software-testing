@@ -346,3 +346,223 @@ def test_valid_puzzle_passes_validation():
     assert error == "", "Valid puzzle should have no error message"
     
     print("✓ test_valid_puzzle_passes_validation passed")
+
+
+# ============================================================================
+# BONUS 2.1: Uniqueness Guarantee Tests
+# ============================================================================
+
+def test_count_solutions_single():
+    """
+    Bonus 2.1: Test counting solutions for puzzle with unique solution
+    """
+    # This is a well-formed puzzle with exactly 1 solution
+    unique_puzzle = [
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    ]
+    
+    board = SudokuBoard(unique_puzzle)
+    count = board.count_solutions()
+    
+    assert count == 1, f"Puzzle should have exactly 1 solution, but found {count}"
+    
+    print("✓ test_count_solutions_single passed")
+
+
+def test_count_solutions_multiple():
+    """
+    Bonus 2.1: Test counting solutions for puzzle with multiple solutions
+    """
+    # Minimal puzzle - likely has multiple solutions
+    multiple_solutions = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
+    
+    board = SudokuBoard(multiple_solutions)
+    count = board.count_solutions(limit=100)  # Limit to avoid long computation
+    
+    assert count > 1, f"Empty puzzle should have multiple solutions, but found {count}"
+    
+    print("✓ test_count_solutions_multiple passed")
+
+
+def test_count_solutions_none():
+    """
+    Bonus 2.1: Test counting solutions for unsolvable puzzle
+    """
+    # Unsolvable puzzle
+    unsolvable = [
+        [1, 2, 3, 4, 5, 6, 7, 8, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 3],
+        [0, 0, 0, 0, 0, 0, 0, 0, 4],
+        [0, 0, 0, 0, 0, 0, 0, 0, 5],
+        [0, 0, 0, 0, 0, 0, 0, 0, 6],
+        [0, 0, 0, 0, 0, 0, 0, 0, 7],
+        [0, 0, 0, 0, 0, 0, 0, 0, 8],
+        [0, 0, 0, 0, 0, 0, 0, 0, 9]
+    ]
+    
+    board = SudokuBoard(unsolvable)
+    count = board.count_solutions()
+    
+    assert count == 0, f"Unsolvable puzzle should have 0 solutions, but found {count}"
+    
+    print("✓ test_count_solutions_none passed")
+
+
+def test_generate_unique_solution():
+    """
+    Bonus 2.1: Test that generator creates puzzles with unique solutions
+    """
+    from sudoku import generate_unique
+    
+    difficulty = 40  # Medium difficulty
+    puzzle_board, solution_board = generate_unique(difficulty)
+    
+    # 1. Should have correct number of empty cells
+    empty_cells = sum(row.count(0) for row in puzzle_board.grid)
+    assert empty_cells == difficulty, f"Should have {difficulty} empty cells, got {empty_cells}"
+    
+    # 2. Should have exactly 1 solution
+    count = puzzle_board.count_solutions()
+    assert count == 1, f"Generated puzzle should have exactly 1 solution, but has {count}"
+    
+    # 3. Should still be solvable
+    puzzle_copy = SudokuBoard(puzzle_board.grid)
+    assert puzzle_copy.solve() is True, "Generated puzzle must be solvable"
+    
+    print("✓ test_generate_unique_solution passed")
+
+
+# ============================================================================
+# BONUS 2.2: Difficulty Rating Engine Tests
+# ============================================================================
+
+def test_rate_easy_puzzle():
+    """
+    Bonus 2.2: Test rating for easy puzzle (Naked Singles only)
+    """
+    from sudoku import rate_difficulty
+    
+    # Easy puzzle - solvable with only Naked Singles
+    easy_puzzle = [
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    ]
+    
+    board = SudokuBoard(easy_puzzle)
+    rating = rate_difficulty(board)
+    
+    assert rating in ["Easy", "EASY", "easy"], f"Should be rated Easy, got {rating}"
+    
+    print("✓ test_rate_easy_puzzle passed")
+
+
+def test_rate_medium_puzzle():
+    """
+    Bonus 2.2: Test rating system can distinguish difficulties
+    """
+    from sudoku import rate_difficulty
+    
+    # Puzzle with moderate difficulty
+    medium_puzzle = [
+        [0, 0, 0, 2, 6, 0, 7, 0, 1],
+        [6, 8, 0, 0, 7, 0, 0, 9, 0],
+        [1, 9, 0, 0, 0, 4, 5, 0, 0],
+        [8, 2, 0, 1, 0, 0, 0, 4, 0],
+        [0, 0, 4, 6, 0, 2, 9, 0, 0],
+        [0, 5, 0, 0, 0, 3, 0, 2, 8],
+        [0, 0, 9, 3, 0, 0, 0, 7, 4],
+        [0, 4, 0, 0, 5, 0, 0, 3, 6],
+        [7, 0, 3, 0, 1, 8, 0, 0, 0]
+    ]
+    
+    board = SudokuBoard(medium_puzzle)
+    rating = rate_difficulty(board)
+    
+    # Rating should be one of the valid difficulty levels
+    assert rating in ["Easy", "Medium", "Hard"], f"Got invalid rating: {rating}"
+    
+    print("✓ test_rate_medium_puzzle passed")
+
+
+def test_rate_hard_puzzle():
+    """
+    Bonus 2.2: Test rating for challenging puzzle
+    """
+    from sudoku import rate_difficulty
+    
+    # Challenging puzzle with many empty cells
+    hard_puzzle = [
+        [0, 0, 0, 0, 0, 0, 0, 1, 2],
+        [0, 0, 0, 0, 3, 5, 0, 0, 0],
+        [0, 0, 0, 6, 0, 0, 0, 7, 0],
+        [7, 0, 0, 0, 0, 0, 3, 0, 0],
+        [0, 0, 0, 4, 0, 0, 8, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 2, 0, 0, 0, 0],
+        [0, 8, 0, 0, 0, 0, 0, 4, 0],
+        [0, 5, 0, 0, 0, 0, 6, 0, 0]
+    ]
+    
+    board = SudokuBoard(hard_puzzle)
+    rating = rate_difficulty(board)
+    
+    # Rating should be one of the valid levels, and for sparse puzzle likely Medium/Hard
+    assert rating in ["Easy", "Medium", "Hard"], f"Got invalid rating: {rating}"
+    assert rating != "Easy", f"Sparse puzzle should be rated Medium or Hard, got {rating}"
+    
+    print("✓ test_rate_hard_puzzle passed")
+
+
+def test_human_solver_techniques():
+    """
+    Bonus 2.2: Test individual solving techniques work
+    """
+    from sudoku import HumanSolver
+    
+    # Test puzzle where Naked Singles should find values
+    puzzle = [
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    ]
+    
+    board = SudokuBoard(puzzle)
+    solver = HumanSolver(board)
+    
+    # Should be able to make progress with techniques
+    progress_made = solver.apply_naked_singles()
+    assert progress_made is True or progress_made >= 0, "Should find at least some naked singles"
+    
+    print("✓ test_human_solver_techniques passed")

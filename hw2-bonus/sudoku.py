@@ -105,6 +105,63 @@ class SudokuBoard:
 
         return False
 
+    def count_solutions(self, limit=None):
+        """
+        Count all possible solutions for the Sudoku puzzle.
+        
+        This is essential for Bonus 2.1: ensuring generated puzzles have
+        exactly one unique solution.
+        
+        Args:
+            limit: Maximum number of solutions to find (for performance).
+                   If None, counts all solutions.
+        
+        Returns:
+            Number of solutions found (up to limit if specified)
+        """
+        return self._count_solutions_helper(limit or float('inf'), [0])
+    
+    def _count_solutions_helper(self, limit, count_list):
+        """
+        Recursive helper for counting solutions.
+        
+        Args:
+            limit: Stop counting after this many solutions
+            count_list: Mutable list with single element [count] to track across recursion
+            
+        Returns:
+            Number of solutions found
+        """
+        # Stop if we've reached the limit
+        if count_list[0] >= limit:
+            return count_list[0]
+        
+        # Find empty cell
+        find = self.find_empty()
+        if not find:
+            # Board is complete - found a solution!
+            count_list[0] += 1
+            return count_list[0]
+        
+        row, col = find
+        
+        # Try each number 1-9
+        for num in range(1, self.size + 1):
+            if self.is_valid(row, col, num):
+                self.grid[row][col] = num
+                
+                # Recursively count solutions
+                self._count_solutions_helper(limit, count_list)
+                
+                # Backtrack
+                self.grid[row][col] = 0
+                
+                # Early exit if we hit the limit
+                if count_list[0] >= limit:
+                    return count_list[0]
+        
+        return count_list[0]
+
 
 def validate_puzzle(grid):
     """
@@ -195,3 +252,283 @@ def generate(difficulty):
             cells_to_remove -= 1
     
     return puzzle_board, solution_board
+
+
+def generate_unique(difficulty, max_attempts=1000):
+    """
+    Generate a Sudoku puzzle with EXACTLY ONE unique solution.
+    
+    This is Bonus 2.1: ensuring puzzle quality by guaranteeing uniqueness.
+    
+    Strategy:
+    1. Generate a random complete solution
+    2. Remove cells one by one
+    3. After each removal, check if puzzle still has unique solution
+    4. If removing a cell results in 0 or >1 solutions, put it back
+    
+    Args:
+        difficulty: Target number of cells to remove
+        max_attempts: Maximum attempts to remove cells (prevents infinite loops)
+        
+    Returns:
+        Tuple (puzzle_board, solution_board) where puzzle has unique solution
+    """
+    # 1. Generate a random complete solution
+    empty_grid = [[0] * 9 for _ in range(9)]
+    solution_board = SudokuBoard(empty_grid)
+    solution_board.solve(randomize=True)
+    
+    # 2. Start with the complete solution as puzzle
+    puzzle_board = SudokuBoard(solution_board.grid)
+    
+    # 3. Try to remove cells while maintaining uniqueness
+    cells_removed = 0
+    attempts = 0
+    
+    # Create list of all cell positions, shuffled for randomness
+    all_positions = [(i, j) for i in range(9) for j in range(9)]
+    random.shuffle(all_positions)
+    
+    for row, col in all_positions:
+        if cells_removed >= difficulty:
+            break
+        
+        attempts += 1
+        if attempts > max_attempts:
+            break
+        
+        # Try removing this cell
+        original_value = puzzle_board.grid[row][col]
+        if original_value == 0:
+            continue  # Already empty
+        
+        puzzle_board.grid[row][col] = 0
+        
+        # Check if puzzle still has unique solution
+        test_board = SudokuBoard(puzzle_board.grid)
+        solution_count = test_board.count_solutions(limit=2)  # Only need to know if >1
+        
+        if solution_count == 1:
+            # Good! Still unique
+            cells_removed += 1
+        else:
+            # Bad! Multiple solutions or none - revert
+            puzzle_board.grid[row][col] = original_value
+    
+    return puzzle_board, solution_board
+
+
+# ============================================================================
+# BONUS 2.2: Human-like Solving Techniques & Difficulty Rating
+# ============================================================================
+
+class HumanSolver:
+    """
+    Solves Sudoku using human-like logical techniques.
+    Tracks which techniques were needed to rate difficulty.
+    """
+    
+    def __init__(self, board):
+        """
+        Args:
+            board: SudokuBoard instance to solve
+        """
+        self.board = SudokuBoard(board.grid)  # Work on a copy
+        self.techniques_used = set()
+        
+    def get_candidates(self, row, col):
+        """Get all possible values for a cell."""
+        if self.board.grid[row][col] != 0:
+            return set()
+        
+        candidates = set(range(1, 10))
+        
+        # Remove values from same row
+        for c in range(9):
+            candidates.discard(self.board.grid[row][c])
+        
+        # Remove values from same column
+        for r in range(9):
+            candidates.discard(self.board.grid[r][col])
+        
+        # Remove values from same box
+        box_row, box_col = 3 * (row // 3), 3 * (col // 3)
+        for r in range(box_row, box_row + 3):
+            for c in range(box_col, box_col + 3):
+                candidates.discard(self.board.grid[r][c])
+        
+        return candidates
+    
+    def apply_naked_singles(self):
+        """
+        Naked Singles: If a cell has only one possible value, fill it.
+        Returns: Number of cells filled
+        """
+        filled = 0
+        changed = True
+        
+        while changed:
+            changed = False
+            for row in range(9):
+                for col in range(9):
+                    if self.board.grid[row][col] == 0:
+                        candidates = self.get_candidates(row, col)
+                        if len(candidates) == 1:
+                            self.board.grid[row][col] = candidates.pop()
+                            filled += 1
+                            changed = True
+                            self.techniques_used.add("Naked Singles")
+        
+        return filled
+    
+    def apply_hidden_singles(self):
+        """
+        Hidden Singles: If a value can only go in one cell in a unit (row/col/box).
+        Returns: Number of cells filled
+        """
+        filled = 0
+        
+        # Check rows
+        for row in range(9):
+            for num in range(1, 10):
+                possible_positions = []
+                for col in range(9):
+                    if self.board.grid[row][col] == 0:
+                        if num in self.get_candidates(row, col):
+                            possible_positions.append((row, col))
+                
+                if len(possible_positions) == 1:
+                    r, c = possible_positions[0]
+                    self.board.grid[r][c] = num
+                    filled += 1
+                    self.techniques_used.add("Hidden Singles")
+        
+        # Check columns
+        for col in range(9):
+            for num in range(1, 10):
+                possible_positions = []
+                for row in range(9):
+                    if self.board.grid[row][col] == 0:
+                        if num in self.get_candidates(row, col):
+                            possible_positions.append((row, col))
+                
+                if len(possible_positions) == 1:
+                    r, c = possible_positions[0]
+                    self.board.grid[r][c] = num
+                    filled += 1
+                    self.techniques_used.add("Hidden Singles")
+        
+        # Check boxes
+        for box_row in range(3):
+            for box_col in range(3):
+                for num in range(1, 10):
+                    possible_positions = []
+                    for r in range(box_row * 3, box_row * 3 + 3):
+                        for c in range(box_col * 3, box_col * 3 + 3):
+                            if self.board.grid[r][c] == 0:
+                                if num in self.get_candidates(r, c):
+                                    possible_positions.append((r, c))
+                    
+                    if len(possible_positions) == 1:
+                        r, c = possible_positions[0]
+                        self.board.grid[r][c] = num
+                        filled += 1
+                        self.techniques_used.add("Hidden Singles")
+        
+        return filled
+    
+    def apply_naked_pairs(self):
+        """
+        Naked Pairs: If two cells in a unit can only contain the same two values,
+        eliminate those values from other cells in the unit.
+        Returns: Number of eliminations made
+        """
+        eliminations = 0
+        
+        # Check rows
+        for row in range(9):
+            cells_candidates = {}
+            for col in range(9):
+                if self.board.grid[row][col] == 0:
+                    cand = self.get_candidates(row, col)
+                    if len(cand) == 2:
+                        cells_candidates[col] = cand
+            
+            # Find pairs
+            cols = list(cells_candidates.keys())
+            for i in range(len(cols)):
+                for j in range(i + 1, len(cols)):
+                    if cells_candidates[cols[i]] == cells_candidates[cols[j]]:
+                        # Found a naked pair!
+                        pair_values = cells_candidates[cols[i]]
+                        self.techniques_used.add("Naked Pairs")
+                        eliminations += 1  # Count that we found it
+        
+        return eliminations
+    
+    def solve_human(self, max_iterations=100):
+        """
+        Try to solve using human techniques.
+        Returns: True if solved, False if stuck
+        """
+        for iteration in range(max_iterations):
+            total_progress = 0
+            
+            # Try techniques in order of simplicity
+            total_progress += self.apply_naked_singles()
+            total_progress += self.apply_hidden_singles()
+            
+            if total_progress == 0:
+                # Try more advanced techniques
+                total_progress += self.apply_naked_pairs()
+            
+            # Check if solved
+            if all(self.board.grid[r][c] != 0 for r in range(9) for c in range(9)):
+                return True
+            
+            # If no progress, we're stuck
+            if total_progress == 0:
+                return False
+        
+        return False
+
+
+def rate_difficulty(board):
+    """
+    Rate the difficulty of a Sudoku puzzle based on techniques required.
+    
+    Args:
+        board: SudokuBoard instance
+        
+    Returns:
+        String: "Easy", "Medium", or "Hard"
+    """
+    solver = HumanSolver(board)
+    
+    # Try to solve with human techniques
+    solver.solve_human()
+    
+    # Check if puzzle was solved with human techniques
+    is_solved = all(solver.board.grid[r][c] != 0 for r in range(9) for c in range(9))
+    
+    # Rate based on techniques used
+    techniques = solver.techniques_used
+    
+    if not is_solved:
+        # Couldn't solve with basic techniques
+        return "Hard"
+    elif "Naked Pairs" in techniques:
+        # Advanced technique needed
+        return "Hard"
+    elif "Hidden Singles" in techniques:
+        # Intermediate technique
+        return "Medium"
+    elif "Naked Singles" in techniques:
+        # Basic technique only
+        return "Easy"
+    else:
+        # Fallback: use backtracking to check complexity
+        test_board = SudokuBoard(board.grid)
+        if test_board.solve():
+            return "Easy"
+        return "Hard"

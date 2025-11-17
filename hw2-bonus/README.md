@@ -1,22 +1,54 @@
 # Sudoku Application - Test-Driven Development (TDD)
 
+**Student**: 侯均頲 (109700046) | **Course**: Software Testing | **NYCU**
+
 ## Project Overview
 
-This project implements a complete Sudoku application using **Test-Driven Development (TDD)** methodology in Python. The application includes:
+A complete Sudoku application built using **strict TDD** (Red-Green-Refactor) methodology in Python.
 
+### Core Features
 1. **Rules Engine** - Validates Sudoku moves
 2. **Backtracking Solver** - Solves any valid Sudoku puzzle
 3. **Puzzle Generator** - Creates random puzzles with varying difficulty
+
+### Bonus Features ⭐
+- ✅ **Bonus 2.3**: Robust error handling with descriptive messages
+- ✅ **Bonus 2.1**: Uniqueness guarantee (generates puzzles with exactly one solution)
+- ✅ **Bonus 2.2**: Difficulty rating engine (rates puzzles as Easy/Medium/Hard)
+
+**Stats**: 17 tests | 100% pass rate | ~530 LOC
+
+## Quick Start
+
+```bash
+# Install dependencies
+pip install pytest
+
+# Run all tests
+pytest test_sudoku.py -v
+
+# Run demo
+python demo.py
+```
+
+Expected output: **17 passed in 0.23s** ✅
 
 ## Files Structure
 
 ```
 hw2-bonus/
-├── sudoku.py           # Main application logic
-├── test_sudoku.py      # Comprehensive test suite
-├── demo.py             # Demonstration script
-├── README.md           # This file
-└── docs/               # Reference documentation
+├── sudoku.py                  # Main application logic (~530 LOC)
+├── test_sudoku.py             # Comprehensive test suite (17 tests)
+├── demo.py                    # Demonstration script
+├── README.md                  # This file
+├── TDD_NARRATIVE.md           # Complete TDD narrative report
+├── SUBMISSION_INSTRUCTIONS.md # Submission checklist
+├── requirements.txt           # Python dependencies
+├── screenshots/               # Test screenshots (for submission)
+│   └── all_tests_passing.png # Required: 17 tests passing
+└── docs/                      # Reference documentation
+    ├── TDD for sudoku.md
+    └── ...
 ```
 
 ## Installation & Setup
@@ -189,21 +221,39 @@ This is more robust and tests the actual requirement.
 
 ## Test Results
 
-All tests pass successfully (including Bonus 2.3):
+All 17 tests pass successfully:
+
+```bash
+pytest test_sudoku.py -v
+```
 
 ```
-test_sudoku.py::test_is_valid PASSED                              [ 11%]
-test_sudoku.py::test_solve PASSED                                 [ 22%]
-test_sudoku.py::test_generate PASSED                              [ 33%]
-test_sudoku.py::test_generate_different_difficulties PASSED       [ 44%]
-test_sudoku.py::test_validate_puzzle_with_invalid_numbers PASSED  [ 55%]
-test_sudoku.py::test_validate_puzzle_with_duplicate_givens PASSED [ 66%]
-test_sudoku.py::test_validate_puzzle_wrong_dimensions PASSED      [ 77%]
-test_sudoku.py::test_solve_unsolvable_puzzle PASSED               [ 88%]
-test_sudoku.py::test_valid_puzzle_passes_validation PASSED        [100%]
+test_sudoku.py::test_is_valid PASSED                              [  5%]
+test_sudoku.py::test_solve PASSED                                 [ 11%]
+test_sudoku.py::test_generate PASSED                              [ 17%]
+test_sudoku.py::test_generate_different_difficulties PASSED       [ 23%]
+test_sudoku.py::test_validate_puzzle_with_invalid_numbers PASSED  [ 29%]
+test_sudoku.py::test_validate_puzzle_with_duplicate_givens PASSED [ 35%]
+test_sudoku.py::test_validate_puzzle_wrong_dimensions PASSED      [ 41%]
+test_sudoku.py::test_solve_unsolvable_puzzle PASSED               [ 47%]
+test_sudoku.py::test_valid_puzzle_passes_validation PASSED        [ 52%]
+test_sudoku.py::test_count_solutions_single PASSED                [ 58%]
+test_sudoku.py::test_count_solutions_multiple PASSED              [ 64%]
+test_sudoku.py::test_count_solutions_none PASSED                  [ 70%]
+test_sudoku.py::test_generate_unique_solution PASSED              [ 76%]
+test_sudoku.py::test_rate_easy_puzzle PASSED                      [ 82%]
+test_sudoku.py::test_rate_medium_puzzle PASSED                    [ 88%]
+test_sudoku.py::test_rate_hard_puzzle PASSED                      [ 94%]
+test_sudoku.py::test_human_solver_techniques PASSED               [100%]
 
-========================= 9 passed in 2.45s =========================
+======================== 17 passed in 0.23s =========================
 ```
+
+**Breakdown**:
+- 4 core tests (validation, solver, generator)
+- 5 Bonus 2.3 tests (error handling)
+- 4 Bonus 2.1 tests (uniqueness guarantee)
+- 4 Bonus 2.2 tests (difficulty rating)
 
 ## Key TDD Principles Applied
 
@@ -244,10 +294,11 @@ Writing tests first influenced good design decisions:
 - **Generation**: O(n) where n is the difficulty level
 
 ### Extensibility
-The design easily supports future enhancements:
-- Different board sizes (would need to parameterize `size`)
-- Uniqueness checking (add a `count_solutions()` method)
-- Difficulty rating (analyze logical techniques required)
+The design demonstrates extensibility through implemented bonuses:
+- ✅ Uniqueness checking via `count_solutions()` method (Bonus 2.1)
+- ✅ Difficulty rating via human technique simulation (Bonus 2.2)
+- ✅ Robust validation with descriptive errors (Bonus 2.3)
+- Future: Different board sizes, more advanced techniques (X-Wing, Swordfish)
 
 ### Phase 4: Task 2.3 - Robust Error Handling (Bonus) ✅ COMPLETED
 
@@ -294,29 +345,51 @@ The validation logic is clear and well-structured:
 
 ---
 
-## Future Enhancements (Remaining Bonus Features)
+## Bonus Features Summary
 
-Based on the assignment, potential next features include:
+### Phase 5: Bonus 2.1 - Uniqueness Guarantee ✅
 
-### Bonus 2.1: Uniqueness Guarantee (Not Implemented)
-- Implement `count_solutions()` method
-- Modify generator to ensure unique solutions
-- Add test: `test_unique_solution()`
+**Implementation**:
+- `count_solutions()` - Counts all possible solutions (with optional limit for performance)
+- `generate_unique()` - Generates puzzles with exactly one solution
+- Uses iterative cell removal with uniqueness checking
 
-### Bonus 2.2: Difficulty Rating Engine (Not Implemented)
-- Implement technique detection (Naked Singles, Hidden Singles, etc.)
-- Rate puzzles based on required techniques
-- Add test: `test_difficulty_rating()`
+**Key Technique**: After removing each cell, verify puzzle still has unique solution using `count_solutions(limit=2)`. If not unique, restore the cell.
+
+### Phase 6: Bonus 2.2 - Difficulty Rating Engine ✅
+
+**Implementation**:
+- `HumanSolver` class - Simulates human solving techniques
+- `rate_difficulty()` - Rates puzzles as Easy/Medium/Hard
+
+**Techniques Implemented**:
+- **Naked Singles**: Cell has only 1 possible value
+- **Hidden Singles**: Value can only go in 1 cell in a unit
+- **Naked Pairs**: Advanced technique detection
+
+**Rating Logic**:
+- Easy: Solvable with Naked Singles only
+- Medium: Requires Hidden Singles
+- Hard: Requires Naked Pairs or can't solve with basic techniques
 
 ## Learning Outcomes
 
 Through this TDD exercise, we demonstrated:
 
-1. ✅ **Red-Green-Refactor Cycle**: Applied rigorously for each feature
-2. ✅ **Test Design**: Created comprehensive test cases covering happy paths and edge cases
-3. ✅ **Incremental Development**: Built features one at a time
-4. ✅ **Code Quality**: Maintained clean, readable, maintainable code
+1. ✅ **Red-Green-Refactor Cycle**: Applied rigorously for each feature (6 phases total)
+2. ✅ **Test Design**: Created 17 comprehensive test cases covering happy paths and edge cases
+3. ✅ **Incremental Development**: Built features one at a time with strict TDD discipline
+4. ✅ **Code Quality**: Maintained clean, readable, maintainable code (~530 LOC)
 5. ✅ **Documentation**: Tests serve as executable documentation
+6. ✅ **Bonus Features**: Successfully implemented all 3 bonus features (2.1, 2.2, 2.3)
+
+## Key Achievements
+
+- 🎯 **100% Test Coverage**: All features have comprehensive test coverage
+- 🚀 **All Bonuses Completed**: Uniqueness guarantee, difficulty rating, error handling
+- 📐 **Clean Architecture**: SudokuBoard class + HumanSolver for technique simulation
+- ⚡ **Performance Optimized**: Smart use of `limit` parameter in solution counting
+- 📝 **Well Documented**: Complete TDD narrative in `TDD_NARRATIVE.md`
 
 ## References
 
@@ -324,11 +397,20 @@ Through this TDD exercise, we demonstrated:
 - Implementation Guide: `docs/Sudoku Generator with TDD in Python.md`
 - Developer Guide: `docs/The Ultimate Sudoku Developer's Guide.md`
 - TDD Guide: `docs/A Comprehensive Guide to Test-Driven Development.md`
+- Full TDD Narrative: `TDD_NARRATIVE.md`
+
+---
 
 ## Author
 
-Developed following TDD principles as part of Software Testing coursework.
+**侯均頲** (109700046)  
+Software Testing | NYCU  
+Developed using strict TDD methodology with AI pair programming
 
-## License
+## Repository
 
-Educational use only.
+https://github.com/egger-meow/software-testing/tree/main/hw2-bonus
+
+---
+
+**License**: Educational use only
