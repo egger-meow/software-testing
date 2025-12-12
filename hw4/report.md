@@ -23,11 +23,21 @@ It was kinda scary seeing how many ways the code could go wrong with just tiny c
 
 ## (b) What mutation score did I achieve with Lab1's test suite?
 
-When I first ran StrykerJS with the empty test file (just the TODO comment), the mutation score was a sad **0%**.
+I set up StrykerJS in the Lab1 folder and ran mutation testing on `main.js` (the MyClass/Student code) using the tests I wrote in Lab1 (`main_test.js`).
 
-All 106 mutants survived because... well, there were no tests to catch them! This really showed me that having no tests = having no safety net at all.
+**Result: 94.12% mutation score**
 
-> 📸 **[INSERT SCREENSHOT: Stryker result showing 0% mutation score with 106 survived mutants]**
+- **34 mutants** generated in total
+- **32 killed** by my Lab1 tests
+- **2 survived**
+
+The 2 survived mutants were:
+1. `id >= this.students.length` → `id > this.students.length` — a boundary condition I didn't catch
+2. `constructor() { this.name = undefined; }` → `constructor() {}` — this is actually an equivalent mutant since `undefined` is the default value anyway
+
+Not bad for tests I wrote without knowing about mutation testing! But it shows there's always room for improvement.
+
+> 📸 **[INSERT SCREENSHOT: Lab1 Stryker result showing 94.12% mutation score (32 killed, 2 survived)]**
 
 ---
 
